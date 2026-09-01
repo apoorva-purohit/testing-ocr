@@ -19,5 +19,5 @@ jobs:
           # Gemini offers an OpenAI-compatible Chat Completions endpoint.
           llm_url: https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
           llm_auth_token: ${{ secrets.GEMINI_KEY }}
-          llm_model: gemini-2.5-flash
+          llm_model: gemini-flash-latest
           llm_use_anthropic: "false"
