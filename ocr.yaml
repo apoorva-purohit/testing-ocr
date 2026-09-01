@@ -1,0 +1,13 @@
+      - name: Run Open Code Review
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 1. Configure OCR to use the Google Gemini provider
+          ocr config provider gemini
+          
+          # 2. Select your preferred Gemini model (e.g., gemini-1.5-pro or gemini-2.5-flash)
+          ocr config model gemini-1.5-pro
+          
+          # 3. Execute the PR review
+          ocr review --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --platform github
