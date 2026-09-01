@@ -1,7 +1,7 @@
 name: Open Code Review
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
@@ -12,22 +12,12 @@ jobs:
   review:
     name: Review pull request
     runs-on: ubuntu-latest
-    # Do not expose the Gemini key to pull requests from forks.
-    if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
-      - name: Check out the pull request
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Install Open Code Review
-        run: npm install --global @alibaba-group/open-code-review
-
       - name: Run Open Code Review
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          ocr config provider gemini
-          ocr config model gemini-1.5-pro
-          ocr review --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.event.pull_request.head.sha }}" --platform github
+        uses: alibaba/open-code-review@main
+        with:
+          # Gemini offers an OpenAI-compatible Chat Completions endpoint.
+          llm_url: https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
+          llm_auth_token: ${{ secrets.GEMINI_KEY }}
+          llm_model: gemini-2.5-flash
+          llm_use_anthropic: "false"
